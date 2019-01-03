@@ -1,3 +1,7 @@
+## 3.2.1 2019-01-03 <dave at tiredofit dot ca>
+
+* Minor Base Image Shift
+
 ## 3.2 2019-01-03 <dave at tiredofit dot ca>
 
 * Public release to github
