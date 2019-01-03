@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv /bin/bash
+
+while [ ! -f /tmp/state/10-postfix-init ]
+do
+  sleep 1
+done
+
+if [ ! -f /tmp/state/09-rsyslog ]; then
+  mkdir -p /tmp/state
+  echo 'Initialization Complete' >/tmp/state/10-postfix
+fi
+
+echo '** [postfix-relay] Starting postfix'
+exec /usr/sbin/postfix -c /etc/postfix start-fg

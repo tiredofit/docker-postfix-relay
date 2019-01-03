@@ -1,0 +1,26 @@
+#!/usr/bin/with-contenv bash
+
+## Environment Variables Setup
+if [ -z "$SMTP_USER" -o -z "$SMTP_PASS" ] ; then
+	echo "SMTP_USER and SMTP_PASS _must_ be defined"
+	exit 1
+fi
+
+export SMTP_USER SMTP_PASS
+export SMTP_HOST=${SMTP_HOST:-"smtp.vpn.selfdesign.org"}
+export SMTP_PORT=${SMTP_PORT:-"2525"}
+export SERVER_NAME=${SERVER_NAME:-"postfix-relay"}
+export ACCEPTED_NETWORKS=${ACCEPTED_NETWORKS:-"172.16.0.0/12"}
+export USE_TLS=${USE_TLS:-"no"}
+export TLS_VERIFY=${TLS_VERIFY:-"may"}
+
+## Postfix Configuration
+echo "Configuring.."
+echo $SERVER_NAME > /etc/mailname
+j2 /assets/postfix/main.cf > /etc/postfix/main.cf
+j2 /assets/postfix/sasl_passwd > /etc/postfix/sasl_passwd
+postmap /etc/postfix/sasl_passwd
+newaliases
+
+  mkdir -p /tmp/state
+  touch /tmp/state/10-postfix-init

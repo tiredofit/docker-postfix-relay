@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv /bin/bash
+
+while [ ! -f /tmp/state/99-container-init ]
+do
+  sleep 1
+done
+
+if [ ! -f /tmp/state/09-rsyslog ]; then
+  mkdir -p /tmp/state
+  echo 'Initialization Complete' >/tmp/state/09-rsyslog
+fi
+
+echo '** [postfix-relay] Starting rsyslogd'
+exec rsyslogd -n
+

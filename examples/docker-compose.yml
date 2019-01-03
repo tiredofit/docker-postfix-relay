@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  postfix-relay:
+    image: tiredofit/postfix-relay:latest
+    container_name: postfix-relay
+    restart: always
+    #volumes:
+      #- ./logs:/var/log/
+    environment:
+      - SMTP_HOST=smtp.example.org
+      - SMTP_PORT=25
+      - SMTP_USER=user@selfdesign.org
+      - SMTP_PASS=super-secure-password
+      - SERVER_NAME=useyourhostname.example.com.org
+
+      - USE_TLS=no
+      - TLS_VERIFY=may
+
+      - ZABBIX_HOSTNAME=sdXX.postfix-relay
+    networks:
+      proxy-tier:
+        aliases:
+          - postfix-relay
+
+networks:
+  proxy-tier:
+    external:
+      name: nginx-proxy
+
+
