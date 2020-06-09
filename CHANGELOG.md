@@ -1,3 +1,9 @@
+## 3.3.0 2020-06-09 <dave at tiredofit dot ca>
+
+   ### Added
+      - Update to support tiredofit/alpine 5.0.0 Base Image
+
+
 ## 3.2.1 2019-01-03 <dave at tiredofit dot ca>
 
 * Minor Base Image Shift
