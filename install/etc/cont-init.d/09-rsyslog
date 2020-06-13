@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+PROCESS_NAME="rsyslog"
+
+sed -i '/^module(load="imklog")$/d' /etc/rsyslog.conf
+liftoff

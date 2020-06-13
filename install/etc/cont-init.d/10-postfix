@@ -3,14 +3,14 @@
 source /assets/functions/00-container
 PROCESS_NAME="postfix-relay"
 
-## Environment Variables Setup
+## Environment variables setup
 if [ -z "$SMTP_USER" -o -z "$SMTP_PASS" ] ; then
 	echo "SMTP_USER and SMTP_PASS _must_ be defined"
 	exit 1
 fi
 
 export SMTP_USER SMTP_PASS
-export SMTP_HOST=${SMTP_HOST:-"smtp.example.org"}
+export SMTP_HOST=${SMTP_HOST:-"localhost"}
 export SMTP_PORT=${SMTP_PORT:-"2525"}
 export SERVER_NAME=${SERVER_NAME:-"postfix-relay"}
 export ACCEPTED_NETWORKS=${ACCEPTED_NETWORKS:-"172.16.0.0/12"}
@@ -24,5 +24,7 @@ j2 /assets/postfix/main.cf > /etc/postfix/main.cf
 j2 /assets/postfix/sasl_passwd > /etc/postfix/sasl_passwd
 postmap /etc/postfix/sasl_passwd
 newaliases
+
+postconf compatibility_level=2
 
 liftoff
