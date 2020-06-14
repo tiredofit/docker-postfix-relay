@@ -1,25 +1,31 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
+# shellcheck disable=SC2034
 PROCESS_NAME="postfix-relay"
 
-## Environment Variables Setup
-if [ -z "$SMTP_USER" -o -z "$SMTP_PASS" ] ; then
+## Environment variables setup
+if [ -z "$SMTP_USER" ] || [ -z "$SMTP_PASS" ] ; then
 	echo "SMTP_USER and SMTP_PASS _must_ be defined"
 	exit 1
 fi
 
 export SMTP_USER SMTP_PASS
-export SMTP_HOST=${SMTP_HOST:-"smtp.example.org"}
+export SMTP_HOST=${SMTP_HOST:-"localhost"}
 export SMTP_PORT=${SMTP_PORT:-"2525"}
 export SERVER_NAME=${SERVER_NAME:-"postfix-relay"}
 export ACCEPTED_NETWORKS=${ACCEPTED_NETWORKS:-"172.16.0.0/12"}
 export USE_TLS=${USE_TLS:-"no"}
 export TLS_VERIFY=${TLS_VERIFY:-"may"}
 
+if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ] || [ ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]; then
+  print_warn "No SSL certs found, autogenerating self-signed"
+  silent openssl req  -new -x509 -days 365 -nodes -sha256 -subj "/C=AU/ST=Some-State/O=Internet Widgets Pty Ltd/CN=*" -out /etc/ssl/certs/ssl-cert-snakeoil.pem -keyout /etc/ssl/private/ssl-cert-snakeoil.key
+fi
+
 ## Postfix Configuration
 print_info "Configuring Postfix"
-echo $SERVER_NAME > /etc/mailname
+echo "$SERVER_NAME" > /etc/mailname
 j2 /assets/postfix/main.cf > /etc/postfix/main.cf
 j2 /assets/postfix/sasl_passwd > /etc/postfix/sasl_passwd
 postmap /etc/postfix/sasl_passwd

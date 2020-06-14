@@ -1,32 +1,34 @@
-FROM tiredofit/alpine:3.8
+FROM tiredofit/alpine:3.12
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
-## Set Defaults
+
+## Set defaults
 ENV ENABLE_SMTP=FALSE \
     ZABBIX_HOSTNAME=postfix-relay
 
 ## Dependencies Setup
-RUN   apk update && \
-      apk add \
+RUN apk update && \
+    apk add \
+        openssl \
         libsasl \
+        cyrus-sasl-plain \
         pflogsumm \
         postfix \
         mailx \
         py-pip \
-        rsyslog \
-        && \
-   \
-   pip install j2cli && \
-   \
+        rsyslog && \
+    \
+    pip install j2cli && \
+    \
 ## Postfix Configuration
-   mkfifo /var/spool/postfix/public/pickup && \
-   ln -s /etc/postfix/aliases /etc/aliases && \
-   \
+    mkfifo /var/spool/postfix/public/pickup && \
+    ln -s /etc/postfix/aliases /etc/aliases && \
+    \
 ## Cleanup
-   rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/*
 
-## Networking Configuration
+## Networking configuration
 EXPOSE 25
 
-## Entrypoint Configuration
+## Entrypoint configuration
 ADD install /
