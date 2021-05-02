@@ -1,13 +1,12 @@
 # hub.docker.com/r/tiredofit/postfix-relay
 
-[![Build Status](https://img.shields.io/docker/build/tiredofit/postfix-relay.svg)](https://hub.docker.com/r/tiredofit/postfix-relay)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/postfix-relay.svg)](https://hub.docker.com/r/tiredofit/postfix-relay)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/postfix-relay.svg)](https://hub.docker.com/r/tiredofit/postfix-relay)
 [![Docker 
 Layers](https://images.microbadger.com/badges/image/tiredofit/postfix-relay.svg)](https://microbadger.com/images/tiredofit/postfix-relay)
 
 
-# Introduction
+## Introduction
 
 Dockerfile to build a simple Postfix container designed to relay messages to an external SMTP Server
 
@@ -15,11 +14,11 @@ This Container uses Alpine:3.8 as a base.
 
 [Changelog](CHANGELOG.md)
 
-# Authors
+## Authors
 
 - [Dave Conroy](https://github.com/tiredofit)
 
-# Table of Contents
+## Table of Contents
 
 - [Introduction](#introduction)
     - [Changelog](CHANGELOG.md)
@@ -33,12 +32,12 @@ This Container uses Alpine:3.8 as a base.
     - [Shell Access](#shell-access)
    - [References](#references)
 
-# Prerequisites
+## Prerequisites
 
 This image will need to connect to an external SMTP Server with User Authentication enabled.
 
 
-# Installation
+## Installation
 
 Automated builds of the image are available on [Registry](https://hub.docker.com/r/tiredofit/postfix-relay) and is the recommended method of installation.
 
@@ -47,14 +46,14 @@ Automated builds of the image are available on [Registry](https://hub.docker.com
 docker pull tiredofit/postfix-relay
 ```
 
-# Quick Start
+### Quick Start
 
 * The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [docker-compose.yml](examples/docker-compose.yml) that can be modified for development or production use.
 
 * Set various [environment variables](#environment-variables) to understand the capabilities of this image.
 * Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
 
-# Configuration
+## Configuration
 
 ### Data-Volumes
 
@@ -81,8 +80,8 @@ Below is the complete list of available options that can be used to customize yo
 fingerprint, verify, secure - Default may)
 
 
-# Maintenance
-#### Shell Access
+## Maintenance
+### Shell Access
 
 For debugging and maintenance purposes you may want access the containers shell. 
 
@@ -90,7 +89,7 @@ For debugging and maintenance purposes you may want access the containers shell.
 docker exec -it (whatever your container name is e.g. postfix-relay) bash
 ```
 
-# References
+## References
 
 * https://www.postfix.org
 
