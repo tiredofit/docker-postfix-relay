@@ -1,4 +1,4 @@
-# hub.docker.com/r/tiredofit/postfix-relay
+# github.com/tiredofit/docker-postfix-relay
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/postfix-relay.svg)](https://hub.docker.com/r/tiredofit/postfix-relay)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/postfix-relay.svg)](https://hub.docker.com/r/tiredofit/postfix-relay)
@@ -6,7 +6,7 @@
 Layers](https://images.microbadger.com/badges/image/tiredofit/postfix-relay.svg)](https://microbadger.com/images/tiredofit/postfix-relay)
 
 
-## Introduction
+## About
 
 Dockerfile to build a simple Postfix container designed to relay messages to an external SMTP Server
 
@@ -14,7 +14,7 @@ This Container uses Alpine:3.8 as a base.
 
 [Changelog](CHANGELOG.md)
 
-## Authors
+## Maintainer
 
 - [Dave Conroy](https://github.com/tiredofit)
 
@@ -32,7 +32,7 @@ This Container uses Alpine:3.8 as a base.
     - [Shell Access](#shell-access)
    - [References](#references)
 
-## Prerequisites
+## Prerequisites and Assumptions
 
 This image will need to connect to an external SMTP Server with User Authentication enabled.
 
@@ -55,7 +55,7 @@ docker pull tiredofit/postfix-relay
 
 ## Configuration
 
-### Data-Volumes
+### Persistent Storage
 
 The following directories are used for configuration and can be mapped for persistent storage.
 

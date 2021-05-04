@@ -10,7 +10,7 @@ services:
     environment:
       - SMTP_HOST=smtp.example.org
       - SMTP_PORT=25
-      - SMTP_USER=user@selfdesign.org
+      - SMTP_USER=user@example.org
       - SMTP_PASS=super-secure-password
       - SERVER_NAME=useyourhostname.example.com.org
 
