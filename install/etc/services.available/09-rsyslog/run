@@ -6,5 +6,5 @@ PROCESS_NAME="rsyslog"
 check_container_initialized
 
 liftoff
-print_info "Starting rsyslogd"
+print_start "Starting rsyslogd"
 exec rsyslogd -n

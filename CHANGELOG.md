@@ -1,3 +1,9 @@
+## 3.4.0 2021-08-31 <dave at tiredofit dot ca>
+
+   ### Added
+      - Alpine 3.12
+
+
 ## 3.3.0 2020-06-09 <dave at tiredofit dot ca>
 
    ### Added

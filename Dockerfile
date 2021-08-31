@@ -1,20 +1,21 @@
-FROM tiredofit/alpine:3.8
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+FROM tiredofit/alpine:3.12
+LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ## Set Defaults
-ENV ENABLE_SMTP=FALSE \
-    ZABBIX_HOSTNAME=postfix-relay
+ENV CONTAINER_ENABLE_MESSAGING=FALSE \
+    CONTAINER_NAME=postfix-relay
 
 ## Dependencies Setup
-RUN   apk update && \
-      apk add \
-        libsasl \
-        pflogsumm \
-        postfix \
-        mailx \
-        py-pip \
-        rsyslog \
-        && \
+RUN apk update && \
+    apk upgrade && \
+    apk add -t .ppostfix-rundeps \
+                libsasl \
+                pflogsumm \
+                postfix \
+                mailx \
+                py-pip \
+                rsyslog \
+                && \
    \
    pip install j2cli && \
    \

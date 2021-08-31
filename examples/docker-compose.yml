@@ -17,7 +17,7 @@ services:
       - USE_TLS=no
       - TLS_VERIFY=may
 
-      - ZABBIX_HOSTNAME=sdXX.postfix-relay
+      - CONTAINER_NAME=sdXX.postfix-relay
     networks:
       proxy-tier:
         aliases:
