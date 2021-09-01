@@ -9,6 +9,7 @@ ENV CONTAINER_ENABLE_MESSAGING=FALSE \
 RUN apk update && \
     apk upgrade && \
     apk add -t .ppostfix-rundeps \
+                cyrus-sasl-plain \
                 libsasl \
                 pflogsumm \
                 postfix \
