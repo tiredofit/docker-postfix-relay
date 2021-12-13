@@ -1,13 +1,15 @@
-version: '2'
+version: '2.4'
 
 services:
   postfix-relay:
     image: tiredofit/postfix-relay:latest
     container_name: postfix-relay
-    restart: always
-    #volumes:
-      #- ./logs:/var/log/
+    volumes:
+      - /data:/data/
+      - /logs:/logs/
     environment:
+      - CONTAINER_NAME=postfix-relay
+
       - SMTP_HOST=smtp.example.org
       - SMTP_PORT=25
       - SMTP_USER=user@example.org
@@ -16,15 +18,13 @@ services:
 
       - USE_TLS=no
       - TLS_VERIFY=may
-
-      - CONTAINER_NAME=sdXX.postfix-relay
     networks:
-      proxy-tier:
+      services:
         aliases:
           - postfix-relay
-
+    restart: always
 networks:
-  proxy-tier:
+  services:
     external:
       name: nginx-proxy
 

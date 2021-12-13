@@ -1,3 +1,14 @@
+## 4.0.0 2021-12-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Alpine 3.15 base
+      - Rewrote Zabbix Monitoring Scripts and Templates
+      - Reworked how configuration was auto generated
+      - Added optional daily statistics for logs
+      - Added ability to use authentication or not to remote SMTP host
+      - Data persistence support for queues to support container restarts
+
+
 ## 3.4.1 2021-09-01 <dave at tiredofit dot ca>
 
    ### Added

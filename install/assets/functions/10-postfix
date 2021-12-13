@@ -1,0 +1,108 @@
+#!/usr/bin/with-contenv bash
+
+configure_data_dir() {
+	### Set Permissions
+	print_debug "Configuring Postfix Data Location"
+	mkdir -p "${DATA_LOCATION}"
+	chmod 750 "${DATA_LOCATION}"
+	chown root:postfix "${DATA_LOCATION}"
+	mkdir -p "${DATA_LOCATION}"/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace,var}
+	chown -R postfix:root "${DATA_LOCATION}"/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace,var}
+	chown -R postfix:postdrop "${DATA_LOCATION}"/{maildrop,public}
+	chown -R root:postfix "${DATA_LOCATION}"/pid
+}
+
+configure_monitoring() {
+    if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
+        print_debug "Adding Crontab entry for Zabbix Monitoring"
+	    echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/postfix-status.sh >/dev/null 2>&1" > /assets/cron/postfix-zabbix
+    fi
+}
+
+configure_postfix() {
+    if [ "${SMTP_PORT}" = "465" ] ; then
+        print_debug "SMTP Port is 465 so adding smtp_tls_wrappermode"
+        smtp_tls_wrappermode="smtp_tls_wrappermode = yes"
+    fi
+
+    if var_true "${ENABLE_AUTH}" ; then
+        sasl_auth=$(cat<<EOF
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options = noanonymous
+smtp_sasl_password_maps = lmdb:${DATA_LOCATION}/var/sasl_passwd
+EOF
+                   )
+    fi
+
+    cat <<EOF > /etc/postfix/main.cf
+## Custom Generated Postfix Configuration! Do not edit, instead set ENV Vars
+## Last Generated on $(TZ=${TIMEZONE} date +'%Y-%m-%d %H:%M:%S %Z')
+
+compatibility_level             = 3.6
+smtpd_banner                    = ${SMTP_BANNER}
+biff                            = no
+append_dot_mydomain             = no
+readme_directory                = no
+mail_owner                      = postfix
+queue_directory                 = ${DATA_LOCATION}/
+
+smtp_use_tls                    = ${USE_TLS}
+smtp_tls_CAfile                 = /etc/ssl/certs/ca-certificates.crt
+smtp_tls_security_level         = ${TLS_VERIFY}
+smtp_tls_note_starttls_offer    = yes
+smtp_tls_session_cache_database = lmdb:${DATA_LOCATION}/var/smtp_scache
+${smtp_tls_wrappermode}
+
+inet_interfaces = all
+inet_protocols = ipv4
+mailbox_size_limit = 0
+mydestination = ${SERVER_NAME}, localhost
+myhostname = ${SERVER_NAME}
+mynetworks = ${ACCEPTED_NETWORKS}
+myorigin = /etc/mailname
+recipient_delimiter = +
+
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_tls_session_cache_database = lmdb:${DATA_LOCATION}/var/smtpd_scache
+smtpd_use_tls=no
+
+${sasl_auth}
+relayhost = ${SMTP_HOST}:${SMTP_PORT}
+
+# deferred mail intervals
+queue_run_delay                 = ${QUEUE_DELAY}
+# How often the queue manager scans the queue for deferred mail.
+# The minimal amount of time a message won't be looked at, and the minimal amount of time to stay away from a "dead" destination.
+minimal_backoff_time            = ${BACKOFF_TIME_MIN}
+# The maximal amount of time a message won't be looked at after a delivery failure.
+maximal_backoff_time            = ${BACKOFF_TIME_MAX}
+# How long a message stays in the queue before it is sent back as undeliverable. Specify 0 for mail that should be returned immediately after the first unsuccessful delivery attempt.
+maximal_queue_lifetime          = ${LIFETIME_QUEUE_MAX}
+# How long a MAILER-DAEMON message stays in the queue before it is considered undeliverable. Specify 0 for mail that should be tried only once.
+bounce_queue_lifetime           = ${LIFETIME_QUEUE_BOUNCE}
+# The size of many in-memory queue manager data structures. Among others, this parameter limits the size of the short-term, in-memory list of "dead" destinations. Destinations that don't fit the list are not added.
+qmgr_message_recipient_limit    = ${LIMIT_MESSAGE_RECIPIENTS}
+# mail size
+message_size_limit              = ${LIMIT_MESSAGE_SIZE}
+EOF
+}
+
+configure_sasl() {
+    echo "${SMTP_HOST}:${SMTP_PORT} ${SMTP_USER}:${SMTP_PASS}" > "${DATA_LOCATION}"/var/sasl_passwd
+    chown postfix:root "${DATA_LOCATION}"/var/sasl_passwd
+}
+
+configure_summary() {
+    if [ "${LOG_TYPE}" = "FILE" ] ; then
+        if var_true "${LOG_SUMMARY}" ; then
+            print_debug "Populating crontab with generate-postfix-stats"
+            mkdir -p "${LOG_PATH}"/summary
+            chown -R postfix:root "${LOG_PATH}"
+            echo "58 23 * * * sudo -u postfix pflogsumm -d today --iso-date-time --problems-first -e --verbose_msg_detail --rej_add_from --zero_fill ${LOG_PATH}/${LOG_FILE} > ${LOG_PATH}/summary/$(TZ=$TIMEZONE date '+%Y%m%d-%H%M%S')-${SERVER_NAME}.log" > /assets/cron/postfix-daily-statistics
+        fi
+    else
+        print_error "You requested Log Summaries, but you are outputting logs to the console - Summaries have been disabled"
+    fi
+}

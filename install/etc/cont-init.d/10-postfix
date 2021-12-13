@@ -1,28 +1,35 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
+prepare_service all
 PROCESS_NAME="postfix-relay"
 
-## Environment Variables Setup
-if [ -z "$SMTP_USER" -o -z "$SMTP_PASS" ] ; then
-	echo "SMTP_USER and SMTP_PASS _must_ be defined"
-	exit 1
+configure_data_dir
+configure_monitoring
+configure_postfix
+
+if var_true "${ENABLE_AUTH}" ; then
+	sanity_var SMTP_USER "SMTP Username"
+	sanity_var SMTP_PASS "SMTP Password"
+	configure_sasl
 fi
 
-export SMTP_USER SMTP_PASS
-export SMTP_HOST=${SMTP_HOST:-"smtp.example.org"}
-export SMTP_PORT=${SMTP_PORT:-"2525"}
-export SERVER_NAME=${SERVER_NAME:-"postfix-relay"}
-export ACCEPTED_NETWORKS=${ACCEPTED_NETWORKS:-"172.16.0.0/12"}
-export USE_TLS=${USE_TLS:-"no"}
-export TLS_VERIFY=${TLS_VERIFY:-"may"}
+configure_summary
 
-## Postfix Configuration
-print_info "Configuring Postfix"
-echo $SERVER_NAME > /etc/mailname
-j2 /assets/postfix/main.cf > /etc/postfix/main.cf
-j2 /assets/postfix/sasl_passwd > /etc/postfix/sasl_passwd
-postmap /etc/postfix/sasl_passwd
+### Execute Custom Scripts if exist to modify parts of the system
+if [ -d /assets/custom-scripts/ ] ; then
+  print_warn "Found Custom Scripts to Execute"
+  for f in $(find /assets/custom-scripts/ -name \*.sh -type f); do
+    print_warn "Running Script ${f}"
+    chmod +x "${f}"
+    ${f}
+  done
+fi
+
+chown -f -R postfix:postfix ${DATA_LOCATION}/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace,var}
+chown -f -R postfix:postdrop ${DATA_LOCATION}/{maildrop,public}
+silent chown -f postfix:postfix ${DATA_LOCATION}/*.*
+sudo -u postfix postmap lmdb:${DATA_LOCATION}/var/sasl_passwd
 newaliases
 
 liftoff

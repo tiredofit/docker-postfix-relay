@@ -1,24 +1,20 @@
-FROM tiredofit/alpine:3.12
+FROM docker.io/tiredofit/alpine:3.15
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ## Set Defaults
-ENV CONTAINER_ENABLE_MESSAGING=FALSE \
-    CONTAINER_NAME=postfix-relay
+ENV CONTAINER_ENABLE_MESSAGING=FALSE
 
 ## Dependencies Setup
 RUN apk update && \
     apk upgrade && \
-    apk add -t .ppostfix-rundeps \
-                cyrus-sasl-plain \
+    apk add -t .postfix-rundeps \
+                cyrus-sasl \
                 libsasl \
+                logtail \
                 pflogsumm \
                 postfix \
-                mailx \
-                py-pip \
                 rsyslog \
                 && \
-   \
-   pip install j2cli && \
    \
 ## Postfix Configuration
    mkfifo /var/spool/postfix/public/pickup && \
