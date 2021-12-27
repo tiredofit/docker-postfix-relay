@@ -30,6 +30,5 @@ chown -f -R postfix:postfix ${DATA_LOCATION}/{active,bounce,corrupt,defer,deferr
 chown -f -R postfix:postdrop ${DATA_LOCATION}/{maildrop,public}
 silent chown -f postfix:postfix ${DATA_LOCATION}/*.*
 sudo -u postfix postmap lmdb:${DATA_LOCATION}/var/sasl_passwd
-newaliases
 
 liftoff

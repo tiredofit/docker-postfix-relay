@@ -1,3 +1,9 @@
+## 4.0.1 2021-12-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Cleanup extra output when Zabbix monitoring
+
+
 ## 4.0.0 2021-12-10 <dave at tiredofit dot ca>
 
    ### Added
