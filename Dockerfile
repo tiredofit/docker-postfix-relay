@@ -2,7 +2,9 @@ FROM docker.io/tiredofit/alpine:3.15
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ## Set Defaults
-ENV CONTAINER_ENABLE_MESSAGING=FALSE
+ENV CONTAINER_ENABLE_MESSAGING=FALSE \
+    IMAGE_NAME="tiredofit/postfix-relay" \
+    IMAGE_REPO_URL="https://github.com/tiredofit/docker-postfix-relay/"
 
 ## Dependencies Setup
 RUN apk update && \
