@@ -1,3 +1,9 @@
+## 4.0.4 2022-02-15 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Update Zabbix Agent configuration
+
+
 ## 4.0.3 2022-02-09 <dave at tiredofit dot ca>
 
    ### Changed
