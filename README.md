@@ -38,7 +38,7 @@ The following image tags are available along with their tagged release based on 
 | Alpine       | `:latest` |
 
 #### Multi Architecture
-Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
+Images are built primarily for `amd64` architecture, and may also include builds for `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
 
 ## Configuration
 
@@ -73,21 +73,25 @@ Be sure to view the following repositories to understand all the customizable op
 | [OS Base](https://github.com/tiredofit/docker-alpine/) | Customized Image based on Alpine Linux |
 
 
-| Parameter           | Description                                                                                                    | Default         |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- | --------------- |
-| `ACCEPTED_NETWORKS` | Who to allow access to relay                                                                                   | `172.16.0.0/12` |
-| `DATA_LOCATION`     | Where the spool and other persistent files are stored                                                          | `/data/`        |
-| `ENABLE_AUTH`       | Enable Authentication to remove SMTP host                                                                      | `TRUE`          |
-| `LOG_FILE`          | Log File name                                                                                                  | `postfix.log`   |
-| `LOG_PATH`          | Log Locations                                                                                                  | `/logs/`        |
-| `LOG_TYPE`          | Output logs to `FILE` or `CONSOLE`                                                                             | `FILE`          |
-| `LOG_SUMMARY`       | Create daily log summaries in `LOG_PATH/summary` of activity                                                   | `TRUE`          |
-| `SMTP_HOST`         | The SMTP Host to forward mails to (e.g. mail.hostname.com)                                                     |                 |
-| `SMTP_USER`         | The username for authentication to remote SMTP (e.g. username@hostname.com)                                    |                 |
-| `SMTP_PASS`         | The password for above username (e.g. password)                                                                |                 |
-| `SERVER_NAME`       | The hostname to identify ourselves to the remote SMTP Server (e.g. yourhost.hostname.com)                      | `example.com`   |
-| `TLS_VERIFY`        | Trust Level for checking remote cert `none` `may` `encrypt` `dane` `dane-only` `fingerprint` `verify` `secure` | `may`           |
-| `USE_TLS`           | Use TLS when sending `yes` or `no`                                                                             | `no`            |
+| Parameter                   | Description                                                                                                    | Default         |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------- |
+| `ACCEPTED_NETWORKS`         | Who to allow access to relay                                                                                   | `172.16.0.0/12` |
+| `DATA_LOCATION`             | Where the spool and other persistent files are stored                                                          | `/data/`        |
+| `ENABLE_AUTH`               | Enable Authentication to remove SMTP host                                                                      | `TRUE`          |
+| `ENABLE_HEADER_CHECKS`      | Enable header checking                                                                                         | `TRUE`          |
+| `ENABLE_SMTP_HEADER_CHECKS` | Enable header checking for SMTP                                                                                | `TRUE`          |
+| `LOG_FILE`                  | Log File name                                                                                                  | `postfix.log`   |
+| `LOG_PATH`                  | Log Locations                                                                                                  | `/logs/`        |
+| `LOG_TYPE`                  | Output logs to `FILE` or `CONSOLE`                                                                             | `FILE`          |
+| `LOG_SUBJECT`               | Log Subject Line                                                                                               | `TRUE`          |
+| `LOG_SUBJECT_SMTP`          | Log Subject Line for SMTP                                                                                      | `TRUE`          |
+| `LOG_SUMMARY`               | Create daily log summaries in `LOG_PATH/summary` of activity                                                   | `TRUE`          |
+| `SMTP_HOST`                 | The SMTP Host to forward mails to (e.g. mail.hostname.com)                                                     |                 |
+| `SMTP_USER`                 | The username for authentication to remote SMTP (e.g. username@hostname.com)                                    |                 |
+| `SMTP_PASS`                 | The password for above username (e.g. password)                                                                |                 |
+| `SERVER_NAME`               | The hostname to identify ourselves to the remote SMTP Server (e.g. yourhost.hostname.com)                      | `example.com`   |
+| `TLS_VERIFY`                | Trust Level for checking remote cert `none` `may` `encrypt` `dane` `dane-only` `fingerprint` `verify` `secure` | `may`           |
+| `USE_TLS`                   | Use TLS when sending `yes` or `no`                                                                             | `no`            |
 
 ### Networking
 

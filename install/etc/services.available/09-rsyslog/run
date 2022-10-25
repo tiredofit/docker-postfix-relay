@@ -8,4 +8,4 @@ check_service_initialized init
 liftoff
 
 print_start "Starting rsyslogd"
-silent rsyslogd -n
+silent exec rsyslogd -n

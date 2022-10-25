@@ -34,6 +34,36 @@ EOF
                    )
     fi
 
+    if var_true "${ENABLE_HEADER_CHECKS}" ; then
+        header_checks="header_checks = regexp:/${DATA_LOCATION}/header_checks"
+        if [ ! -f "${DATA_LOCATION}"/header_checks ] ; then touch "${DATA_LOCATION}"/header_checks ; fi
+    fi
+
+    if var_true "${ENABLE_SMTP_HEADER_CHECKS}" ; then
+        smtp_header_checks="smtp_header_checks = regexp:/${DATA_LOCATION}/smtp_header_checks"
+        if [ ! -f "${DATA_LOCATION}"/smtp_header_checks ] ; then touch "${DATA_LOCATION}"/smtp_header_checks ; fi
+    fi
+
+    if var_true "${LOG_SUBJECT}" ; then
+        if ! grep -q "Subject:" "${DATA_LOCATION}"/header_checks ; then
+            echo "/^Subject:/     INFO subject:" > "${DATA_LOCATION}"/header_checks
+        fi
+    else
+        if [ -f "${DATA_LOCATION}"/header_checks ] ; then
+            sed -i '/Subject:/d' "${DATA_LOCATION}"/header_checks
+        fi
+    fi
+
+    if var_true "${LOG_SUBJECT_SMTP}" ; then
+        if ! grep -q "Subject:" "${DATA_LOCATION}"/smtp_header_checks ; then
+            echo "/^Subject:/     INFO subject:" > "${DATA_LOCATION}"/smtp_header_checks
+        fi
+    else
+        if [ -f "${DATA_LOCATION}"/smtp_header_checks ] ; then
+            sed -i '/Subject:/d' "${DATA_LOCATION}"/smtp_header_checks
+        fi
+    fi
+
     cat <<EOF > /etc/postfix/main.cf
 ## Custom Generated Postfix Configuration! Do not edit, instead set ENV Vars
 ## Last Generated on $(TZ=${TIMEZONE} date +'%Y-%m-%d %H:%M:%S %Z')
@@ -67,6 +97,9 @@ smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
 smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
 smtpd_tls_session_cache_database = lmdb:${DATA_LOCATION}/var/smtpd_scache
 smtpd_use_tls=no
+
+${header_checks}
+${smtp_header_checks}
 
 ${sasl_auth}
 relayhost = ${SMTP_HOST}:${SMTP_PORT}

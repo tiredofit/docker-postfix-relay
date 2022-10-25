@@ -16,18 +16,12 @@ fi
 
 configure_summary
 
-### Execute Custom Scripts if exist to modify parts of the system
-if [ -d /assets/custom-scripts/ ] ; then
-  print_warn "Found Custom Scripts to Execute"
-  for f in $(find /assets/custom-scripts/ -name \*.sh -type f); do
-    print_warn "Running Script ${f}"
-    chmod +x "${f}"
-    ${f}
-  done
-fi
+custom_scripts
 
 chown -f -R postfix:postfix ${DATA_LOCATION}/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace,var}
 chown -f -R postfix:postdrop ${DATA_LOCATION}/{maildrop,public}
+if var_true "${ENABLE_HEADER_CHECKS}" ; then silent sudo -u postfix postmap "${DATA_PATH}"/header_checks ; fi
+if var_true "${ENABLE_SMTP_HEADER_CHECKS}" ; then silent sudo -u postfix postmap "${DATA_PATH}"/header_checks ; fi
 silent chown -f postfix:postfix ${DATA_LOCATION}/*.*
 sudo -u postfix postmap lmdb:${DATA_LOCATION}/var/sasl_passwd
 
