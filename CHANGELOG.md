@@ -1,3 +1,9 @@
+## 4.1.1 2022-10-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change in logging for Subject:
+
+
 ## 4.1.0 2022-10-25 <dave at tiredofit dot ca>
 
    ### Added
